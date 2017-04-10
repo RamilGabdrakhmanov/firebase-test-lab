@@ -1,0 +1,27 @@
+machine:
+  java:
+    version: oraclejdk8
+  environment:
+    GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
+
+general:
+  artifacts:
+    - "/home/ubuntu/CircleCItest/app/build/outputs/apk"
+    - "/home/ubuntu/CircleCItest/app/build/reports"
+
+dependencies:
+  pre:
+    - chmod +x deploy_staging.sh
+  cache_directories:
+    - ~/.android
+    - ~/android
+
+test:
+  override:
+    - echo 0
+
+deployment:
+  master:
+    branch: master
+    commands:
+      - ./deploy_staging.sh
