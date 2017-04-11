@@ -18,8 +18,6 @@ dependencies:
     - ~/.android
     - ~/android
   post:
-    - ./gradlew :app:assembleDebug -PdisablePreDex
-    - ./gradlew :app:assembleDebugTest -PdisablePreDex
     - echo $GCLOUD_SERVICE_KEY | base64 --decode > ${HOME}/client-secret.json
     - sudo /opt/google-cloud-sdk/bin/gcloud config set project test-34cb1
     - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update
