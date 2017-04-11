@@ -28,9 +28,9 @@ dependencies:
 
 test:
   override:
-    - echo "y" | sudo /opt/google-cloud-sdk/bin/gcloud beta test android run --app app/build/outputs/apk/app-debug.apk --test app/build/outputs/apk/app-debug-androidTest.apk --results-bucket cloud-test-circle-ctl-test
+    - echo "y" | sudo /opt/google-cloud-sdk/bin/gcloud beta test android run --app app/build/outputs/apk/app-debug.apk --test app/build/outputs/apk/app-debug-androidTest.apk --results-bucket test-34cb1.appspot.com
   post:
-    - sudo /opt/google-cloud-sdk/bin/gsutil -m cp -r `sudo /opt/google-cloud-sdk/bin/gsutil ls gs://cloud-test-circle-ctl-test | tail -1` $CIRCLE_ARTIFACTS/
+    - sudo /opt/google-cloud-sdk/bin/gsutil -m cp -r `sudo /opt/google-cloud-sdk/bin/gsutil ls gs://test-34cb1.appspot.com | tail -1` $CIRCLE_ARTIFACTS/
 
 deployment:
   master:
