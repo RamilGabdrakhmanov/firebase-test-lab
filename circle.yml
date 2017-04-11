@@ -12,22 +12,26 @@ general:
 dependencies:
   pre:
     - chmod +x deploy_staging.sh
-    - sudo apt-get update; sudo apt-get install gcc python-setuptools
-    - sudo pip install -U crcmod
   cache_directories:
     - ~/.android
     - ~/android
-  post:
-    - echo $GCLOUD_SERVICE_KEY | base64 --decode > ${HOME}/client-secret.json
-    - sudo /opt/google-cloud-sdk/bin/gcloud config set project test-34cb1
-    - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update
-    - sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file ${HOME}/client-secret.json
-    - ./gradlew assembleDebug
-    - ./gradlew assembleAndroidTest
 
 test:
+  pre:
+    - emulator -avd circleci-android22 -no-audio -no-window:
+        background: true
+        parallel: true
   override:
-    - echo "y" | sudo /opt/google-cloud-sdk/bin/gcloud firebase test android run --app app/build/outputs/apk/app-debug.apk --test app/build/outputs/apk/app-debug-androidTest.apk --device model=Nexus5,version=22
+    - circle-android wait-for-boot
+    - sleep 30
+    - adb shell input keyevent 82
+    - adb shell settings put global window_animation_scale 0.0 
+    - adb shell settings put global transition_animation_scale 0.0
+    - adb shell settings put global animator_duration_scale 0.0
+    - (./gradlew connectedDebugAndroidTest):
+        timeout: 1200
+    - cp -r app/build/outputs $CIRCLE_ARTIFACTS
+    - cp -r app/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
 
 deployment:
   master:
